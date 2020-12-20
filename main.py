@@ -1,16 +1,41 @@
-# This is a sample Python script.
+import sys
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+import os
+from PIL import Image, ImageDraw
+from PyQt5 import uic
+from PyQt5.QtGui import QPixmap
+from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel
+import random as r
+
+class MyWidget(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        uic.loadUi('main.ui', self)
+        self.pushButton.clicked.connect(self.paint)
+        self.do_paint = False
+
+    def paint(self):
+        b = 240
+        new_image = Image.new("RGB", (200, 200), (b, b, b))
+        drawer = ImageDraw.Draw(new_image)
+        a = r.randrange(10, 100)
+        drawer.ellipse(((a, a), (200 - a, 200 - a)), '#FFDB00')
+        new_image.save('cik.png')
+
+        self.pixmap = QPixmap('cik.png')
+        self.image = QLabel(self)
+        self.image.move(40, 10)
+        self.image.resize(200, 200)
+        self.image.setPixmap(self.pixmap)
+        self.image.show()
+
+        os.remove('cik.png')
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
 
 
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    app = QApplication(sys.argv)
+    ex = MyWidget()
+    ex.show()
+    sys.exit(app.exec_())
